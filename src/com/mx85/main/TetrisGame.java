@@ -71,6 +71,7 @@ public class TetrisGame extends JFrame {
         private JLabel pointsLabel = new JLabel("0");
         private JLabel nextLabel = new JLabel("Next: ");
         private NextPieceType nextType = new NextPieceType();
+        private int points = 0;
 
         public ResultPanel() {
             setPreferredSize(new Dimension(40, 60));
@@ -156,6 +157,11 @@ public class TetrisGame extends JFrame {
                 g.fillRect(0,20,10,10);
                 g.fillRect(0,30,10,10);
             }
+        }
+
+        public void addPoints(int points) {
+            this.points += points;
+            pointsLabel.setText(Integer.toString(this.points));
         }
     }
 
@@ -250,6 +256,7 @@ public class TetrisGame extends JFrame {
                 if(scored) {
                     deleteRow(x);
                     --x;
+                    resultPanel.addPoints(10);
                 }
             }
         }

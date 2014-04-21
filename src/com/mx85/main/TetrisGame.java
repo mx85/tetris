@@ -1,6 +1,7 @@
 package com.mx85.main;
 
 import javax.swing.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,11 +18,17 @@ public class TetrisGame extends JFrame {
     private JPanel boardPanel = new JPanel();
     private ResultPanel resultPanel = new ResultPanel();
 
+    private JButton[][] cells = new JButton[20][20];
+
     public TetrisGame() {
         super("Tetris");
         this.setSize(400, 500);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        try {
+            UIManager.setLookAndFeel(new MetalLookAndFeel());
+        }
+        catch(Exception e) {}
 
         this.setLayout(new GridLayout());
 
@@ -60,9 +67,20 @@ public class TetrisGame extends JFrame {
                     }
                 });
 
-        gameLooper = new GameLooper();
-        timer = new Timer(normalSpeed, gameLooper);
-        timer.start();
+        boardPanel.setLayout(new GridLayout(20,20));
+        for(int i = 0; i < cells.length; i++) {
+            for(int j = 0; j < cells[i].length; j++) {
+                cells[j][i] = new JButton();
+                cells[j][i].setEnabled(false);
+                cells[j][i].setBackground(Color.lightGray);
+                cells[j][i].setOpaque(true);
+                boardPanel.add(cells[j][i]);
+            }
+        }
+
+       gameLooper = new GameLooper();
+       timer = new Timer(normalSpeed, gameLooper);
+       timer.start();
     }
 
     private class ResultPanel extends JPanel {
@@ -75,7 +93,6 @@ public class TetrisGame extends JFrame {
 
         public ResultPanel() {
             setPreferredSize(new Dimension(40, 60));
-            pointsTextLabel.setName("pointsTextLabel");
 
             this.setLayout(new GridLayout(2, 2));
             this.add(pointsTextLabel);
@@ -165,38 +182,12 @@ public class TetrisGame extends JFrame {
         }
     }
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        Image buffer = boardPanel.createImage(boardPanel.getWidth(), boardPanel.getHeight());
-        Graphics sg = buffer.getGraphics();
-        sg.clearRect(0, 0, boardPanel.getWidth(), boardPanel.getHeight());
-        gameLooper.draw(sg);
-        drawGrids(sg);
-        g.drawImage(buffer, 0, 0, boardPanel);
-
-    }
-
-    private void drawGrids(Graphics g) {
-        g.setColor(Color.white);
-        for(int x = 0; x < gameLooper.cells.length; x++) {
-            for(int y = 0; y < gameLooper.cells[x].length; y++) {
-                g.drawRect(20 * y, 20 * x, 20, 20);
-            }
-        }
-    }
-
-
     private class GameLooper implements ActionListener {
 
-        private Color[][] cells = new Color[20][20];
         private com.mx85.main.Shape currentShape;
         private com.mx85.main.Shape nextShape;
 
         public GameLooper() {
-            for (int i = 0; i  < 20; i++)
-                for (int j = 0; j < 20; j++)
-                    cells[j][i] = Color.lightGray;
             currentShape = PieceFactory.createRandomPiece();
             nextShape = PieceFactory.createRandomPiece();
             resultPanel.setPieceType(nextShape.getPieceType());
@@ -210,15 +201,6 @@ public class TetrisGame extends JFrame {
         public void dropPiece() {
             move(com.mx85.main.Shape.DIRECTION.DOWN);
             repaint();
-        }
-
-        public void draw(Graphics g) {
-            for(int x = 0; x < 20; x++) {
-                for(int y = 0; y < 20; y++) {
-                    g.setColor(cells[y][x]);
-                    g.fillRect(20*y, 380-20*x, 20, 20);
-                }
-            }
         }
 
         public void move(com.mx85.main.Shape.DIRECTION direction) {
@@ -246,28 +228,28 @@ public class TetrisGame extends JFrame {
         }
 
         private void checkRows() {
-            for(int x = 0; x < 20; x++) {
+            for(int y = 0; y < 20; y++) {
                 boolean scored = true;
-                for(int y = 0; y < 20; y++) {
-                   if(cells[y][x] == Color.lightGray) {
+                for(int x = 0; x < 20; x++) {
+                   if(cells[x][y].getBackground().equals(Color.lightGray)) {
                        scored = false;
                    }
                 }
                 if(scored) {
-                    deleteRow(x);
-                    --x;
+                    deleteRow(y);
+                    y = y - 1;
                     resultPanel.addPoints(10);
                 }
             }
         }
 
         private void deleteRow(int start) {
-            for(int x = start; x < 20; x++) {
-                for(int y = 0; y < 20; y++) {
-                    if(x < 19)
-                        cells[y][x] = cells[y][x + 1];
+            for(int y = start; y > 0; y--) {
+                for(int x = 0; x < 20; x++) {
+                    if(y > 0)
+                        cells[x][y].setBackground(cells[x][y-1].getBackground());
                     else
-                        cells[y][x] = cells[y][x] = Color.lightGray;
+                        cells[x][y].setBackground(Color.lightGray);
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.mx85.main;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class PieceFactory {
@@ -22,7 +23,7 @@ public class PieceFactory {
         public LPiece() {
             super(new int[][] {
                     {10, 10, 10, 11},
-                    {19, 18, 17, 17},},
+                    {1, 2, 3, 3},},
                     Color.red, "LPiece");
         }
 
@@ -36,7 +37,7 @@ public class PieceFactory {
         public ZPiece() {
             super(new int[][] {
                     {10, 11, 11, 12},
-                    {18, 18, 19, 19},},
+                    {2, 2, 1, 1},},
                     Color.blue, "ZPiece");
         }
 
@@ -50,7 +51,7 @@ public class PieceFactory {
         public TPiece() {
             super(new int[][] {
                     {10, 11, 12, 11},
-                    {19, 19, 19, 18},},
+                    {1, 1, 1, 2},},
                     Color.yellow, "TPiece");
         }
 
@@ -64,7 +65,7 @@ public class PieceFactory {
         public LongPiece() {
             super(new int[][] {
                     {10, 10, 10, 10},
-                    {19, 18, 17, 16},},
+                    {1, 2, 3, 4},},
                     Color.green, "LongPiece");
         }
 
@@ -78,7 +79,7 @@ public class PieceFactory {
         public CubePiece() {
             super(new int[][] {
                     {10, 11, 10, 11},
-                    {18, 18, 19, 19},},
+                    {2, 2, 1, 1},},
                     Color.orange, "CubePiece");
         }
 
@@ -94,39 +95,39 @@ public class PieceFactory {
             super(cords, color, name);
         }
 
-        public void erase (Color[][] table) {
+        public void erase (JButton[][] cells) {
             for (int i = 0; i < cords[X_AXIS].length; i++)   {
-                table[cords[X_AXIS][i]][cords[Y_AXIS][i]] = Color.lightGray;
+                cells[cords[X_AXIS][i]][cords[Y_AXIS][i]].setBackground(Color.lightGray);
             }
         }
 
-        public void draw(Color[][] cells) {
+        public void draw(JButton[][] cells) {
             for(int i = 0; i < cords[X_AXIS].length; i++ ) {
-                cells[cords[X_AXIS][i]][cords[Y_AXIS][i]] = color;
+                cells[cords[X_AXIS][i]][cords[Y_AXIS][i]].setBackground(color);
             }
         }
 
-        private boolean testPosition(int x, int y, Color[][] cells) {
+        private boolean testPosition(int x, int y, JButton[][] cells) {
             if((x < 0 || x > 19))
                 return false;
             if((y < 0 || y > 19))
                 return false;
-            if(cells[x][y] != Color.lightGray)
+            if(!cells[x][y].getBackground().equals(Color.lightGray))
                 return false;
             return true;
         }
 
-        private boolean moveDown(Color[][] cells) {
+        private boolean moveDown(JButton[][] cells) {
             boolean down = tryDown(cells);
             if(down) {
                 for(int i = 0; i < cords[X_AXIS].length; i++ ) {
-                    cords[Y_AXIS][i]--;
+                    cords[Y_AXIS][i]++;
                 }
             }
             return down;
         }
 
-        private boolean moveLeft(Color[][] cells) {
+        private boolean moveLeft(JButton[][] cells) {
             boolean left = tryLeft(cells);
             if(left) {
                 for(int i = 0; i < 4; i++ ) {
@@ -136,7 +137,7 @@ public class PieceFactory {
             return left;
         }
 
-        private boolean moveRight(Color[][] cells) {
+        private boolean moveRight(JButton[][] cells) {
             boolean right = tryRight(cells);
             if(right) {
                 for(int i = 0; i < 4; i++ ) {
@@ -146,7 +147,7 @@ public class PieceFactory {
             return right;
         }
 
-        private boolean rotate(Color[][] cells) {
+        private boolean rotate(JButton[][] cells) {
             boolean rotate = tryRotate(cells);
             if(rotate) {
                 for (int i = 0; i < 4; i++) {
@@ -159,15 +160,15 @@ public class PieceFactory {
             return rotate;
         }
 
-        private boolean tryDown(Color[][] cells) {
+        private boolean tryDown(JButton[][] cells) {
             for(int i = 0; i < cords[X_AXIS].length; i++ ) {
-                if(!testPosition(cords[X_AXIS][i], cords[Y_AXIS][i] - 1, cells))
+                if(!testPosition(cords[X_AXIS][i], cords[Y_AXIS][i] + 1, cells))
                     return false;
             }
             return true;
         }
 
-        private boolean tryRight(Color[][] cells) {
+        private boolean tryRight(JButton[][] cells) {
             for(int i = 0; i < cords[X_AXIS].length; i++ ) {
                 if(!testPosition(cords[X_AXIS][i] + 1, cords[Y_AXIS][i], cells))
                     return false;
@@ -175,7 +176,7 @@ public class PieceFactory {
             return true;
         }
 
-        private boolean tryLeft(Color[][] cells) {
+        private boolean tryLeft(JButton[][] cells) {
             for(int i = 0; i < cords[X_AXIS].length; i++ ) {
                 if(!testPosition(cords[X_AXIS][i] - 1, cords[Y_AXIS][i], cells))
                     return false;
@@ -183,7 +184,7 @@ public class PieceFactory {
             return true;
         }
 
-        private boolean tryRotate(Color[][] cells) {
+        private boolean tryRotate(JButton[][] cells) {
             for (int i = 0; i < 4; i++) {
                 int dx = cords[X_AXIS][i] - cords[0][1];
                 int dy = cords[Y_AXIS][i] - cords[1][1];
@@ -195,7 +196,7 @@ public class PieceFactory {
             return true;
         }
 
-        public boolean move(DIRECTION direction, Color[][] cells) {
+        public boolean move(DIRECTION direction, JButton[][] cells) {
             boolean moved = false;
             erase(cells);
             switch (direction) {

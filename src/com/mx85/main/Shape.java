@@ -1,5 +1,6 @@
 package com.mx85.main;
 
+import javax.swing.*;
 import java.awt.*;
 
 public abstract class Shape {
@@ -31,9 +32,9 @@ public abstract class Shape {
         this.name = name;
     }
 
-    public abstract void erase (Color [][] cells);
-    public abstract void draw (Color [][] cells);
-    public abstract boolean move(DIRECTION direction, Color[][] cells);
+    public abstract void erase (JButton [][] cells);
+    public abstract void draw (JButton [][] cells);
+    public abstract boolean move(DIRECTION direction, JButton[][] cells);
     public abstract PIECE getPieceType();
 
     @Override

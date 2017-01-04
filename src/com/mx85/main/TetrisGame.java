@@ -211,6 +211,10 @@ public class TetrisGame extends JFrame {
                         nextShape = PieceFactory.createRandomPiece();
                         resultPanel.setPieceType(nextShape.getPieceType());
                         timer.setDelay(normalSpeed);
+                        if(isGameOver(currentShape))
+                        {
+                        	timer.stop();
+                        }
                         checkRows();
                     }
                     break;
@@ -252,6 +256,19 @@ public class TetrisGame extends JFrame {
                         cells[x][y].setBackground(Color.lightGray);
                 }
             }
+        }
+        public boolean isGameOver(Shape currentShape)
+        {
+        	
+        	for(int i=0;i<4;i++)
+        		for (int j=0;j<4;j++)
+        	if (!cells[	currentShape.cords[0][i]][currentShape.cords[1][j]].getBackground().equals(Color.lightGray))
+        	{
+        		return true;
+        	}
+        	
+        
+        	return false;
         }
     }
 }
